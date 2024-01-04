@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 function App() {
   const [products, setProducts] = useState(
@@ -17,6 +17,14 @@ function App() {
       }
     ]
   );
+
+  useEffect(()=>{
+    fetch('http://localhost:5000/api/products')
+    .then(response => response.json())
+    .then(data=>setProducts(data))
+
+  },[]) //dependency array = run only once
+  
 
   function addProduct() {
     setProducts(prevState=>[...prevState,{name:'Product'+(prevState.length+1),price:(prevState.length+1)*100.00}]);
