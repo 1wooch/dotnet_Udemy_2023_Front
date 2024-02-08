@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { Product } from "../../app/models/Product";
 import ProductList from "./ProductList";
+import agent from "../../app/api/agent";
 
 
 export default function Catalog(){
@@ -10,9 +11,9 @@ export default function Catalog(){
       );
     
       useEffect(()=>{
-        fetch('http://localhost:5198/api/products')
-        .then(response => response.json())
-        .then(data=>setProducts(data))
+        agent.Catalog.list().then(products=>{
+          setProducts(products)
+        })
     
       },[]) //dependency array = run only once
       
