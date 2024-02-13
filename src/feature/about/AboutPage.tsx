@@ -6,11 +6,11 @@ export default function AboutPage(){
         <Container>
             <Typography gutterBottom variant="h2">Errors for testing purpose</Typography>
             <ButtonGroup fullWidth>
-                <Button variant ='contained' onClick={()=> agent.TestErrors.get400}>Test 400 Error</Button>
-                <Button variant ='contained' onClick={()=> agent.TestErrors.get401}>Test 401 Error</Button>
-                <Button variant ='contained' onClick={()=> agent.TestErrors.get404}>Test 404 Error</Button>
-                <Button variant ='contained' onClick={()=> agent.TestErrors.get500}>Test 500 Error</Button>
-                <Button variant ='contained' onClick={()=> agent.TestErrors.getValidationError}>Test getValidationError </Button>
+                <Button variant ='contained' onClick={()=> agent.TestErrors.get400().catch(error=>console.log(error))}>Test 400 Error</Button>
+                <Button variant ='contained' onClick={()=> agent.TestErrors.get401().catch(error=>console.log(error))}>Test 401 Error</Button>
+                <Button variant ='contained' onClick={()=> agent.TestErrors.get404().catch(error=>console.log(error))}>Test 404 Error</Button>
+                <Button variant ='contained' onClick={()=> agent.TestErrors.get500().catch(error=>console.log(error))}>Test 500 Error</Button>
+                <Button variant ='contained' onClick={()=> agent.TestErrors.getValidationError().catch(error=>console.log(error))}>Test getValidationError </Button>
             </ButtonGroup>
         </Container>
     )
