@@ -5,6 +5,7 @@ import { Product } from "../../app/models/Product";
 import { useState } from "react"; // Import the useState hook
 import agent from "../../app/api/agent";
 import NotFound from "../../app/errors/NotFound";
+import LoadingComponent from "../../app/layout/LoadingComponent";
 
 export default function ProductDetails(){
     const {id}=useParams<{id:string}>();
@@ -21,7 +22,7 @@ export default function ProductDetails(){
         
     },[id]);
 
-    if(loading) return <Typography variant="h2">Loading...</Typography>
+    if(loading) return <LoadingComponent message="Loading Product..."/>
 
     if(!product) return <NotFound/>
 
