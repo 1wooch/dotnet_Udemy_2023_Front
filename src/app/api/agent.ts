@@ -6,6 +6,8 @@ const sleep =()=>new Promise(resolve=>setTimeout(resolve,500));
 
 
 axios.defaults.baseURL = 'http://localhost:5198/api/';
+//axios.defaults.withCredentials=true;
+//credential disabled for now
 
 const responseBody = (response: AxiosResponse) => response.data;
 
@@ -60,9 +62,17 @@ const TestErrors = {
     get500: () => request.get('buggy/server-error'),
     getValidationError: () => request.get('buggy/validation-error')
 }
+const Basket={
+    get:()=>request.get('basket'), 
+    addItem: (productId:number,quantity=1)=>request.post(`basket?productId=${productId}&quantity=${quantity}`,{}),
+    deleteItem: (productId:number,quantity=1)=>request.del(`basket?productId=${productId}&quantity=${quantity}`)
+
+}
+
 const agent = {
     Catalog,
-    TestErrors
+    TestErrors,
+    Basket
 }
 
 
