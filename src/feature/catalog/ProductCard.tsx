@@ -3,7 +3,7 @@ import { Product } from "../../app/models/Product";
 import { Link } from "react-router-dom";
 import { useState } from "react";
 import agent from "../../app/api/agent";
-import { LoadingButton } from "@mui/lab";
+//import { LoadingButton } from "@mui/lab";
 
 interface Props{
     product:Product;
@@ -52,9 +52,9 @@ export default function ProductCard({product}:Props){
                 </Typography>
             </CardContent>
             <CardActions>
-                <LoadingButton loading={loading} onClick={()=>handleAddItem(product.id)}></LoadingButton>
                 <Button component={Link} to={`/catalog/${product.id}`} size="small">View</Button>
             </CardActions>
         </Card>
     )   
 }
+//                <LoadingButton loading={loading} onClick={()=>handleAddItem(product.id)}></LoadingButton>
