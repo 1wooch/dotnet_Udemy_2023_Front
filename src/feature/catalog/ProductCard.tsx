@@ -49,11 +49,12 @@ export default function ProductCard({product}:Props){
                 </Typography>
             </CardContent>
             <CardActions>
-                <Button onClick={()=>handleAddItem(product.id)}></Button>
+                <Button onClick={()=>handleAddItem(product.id)}>ADD</Button>
                 <Button component={Link} to={`/catalog/${product.id}`} size="small">View</Button>
             </CardActions>
         </Card>
     )   
 }
+// since we don't use the MUI lab it is commented out and replaced into normal button 
 //                <LoadingButton loading={loading} onClick={()=>handleAddItem(product.id)}></LoadingButton>
 
