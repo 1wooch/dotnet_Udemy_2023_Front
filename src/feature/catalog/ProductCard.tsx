@@ -18,10 +18,7 @@ export default function ProductCard({product}:Props){
         agent.Basket.addItem(productId)
         .catch(error=>console.log(error))
         .finally(()=>setLoading(false));
-        /*
-        .then(()=>{})
-        .finally(()=>setLoading(false));
-        */
+       
     }
     return(
         <Card sx={{ maxWidth: 345 }}>
@@ -52,9 +49,11 @@ export default function ProductCard({product}:Props){
                 </Typography>
             </CardContent>
             <CardActions>
+                <Button onClick={()=>handleAddItem(product.id)}></Button>
                 <Button component={Link} to={`/catalog/${product.id}`} size="small">View</Button>
             </CardActions>
         </Card>
     )   
 }
 //                <LoadingButton loading={loading} onClick={()=>handleAddItem(product.id)}></LoadingButton>
+

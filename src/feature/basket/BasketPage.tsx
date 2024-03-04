@@ -21,9 +21,41 @@ export default function BasketPage(){
     if(!basket) return <Typography variant='h3'>Your Baket is Empty</Typography>
 
     return(
-        <h1>Buyer Id = {basket.buyerId}</h1>
+        <div>
+            <h1>Buyer Id = {basket.buyerId}</h1>
+
+            <div>
+            <table style={{ minWidth: 650 }} aria-label="simple table">
+                <thead>
+                    <tr>
+                        <th>Product (100g serving)</th>
+                        <th style={{ textAlign: 'right' }}>Price</th>
+                        <th style={{ textAlign: 'right' }}>Quantity</th>
+                        <th style={{ textAlign: 'right' }}>Subtotal</th>
+                        <th style={{ textAlign: 'right' }}></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {basket.items.map(item => (
+                        <tr key={item.productId}>
+                            <td>{item.name}</td>
+                            <td style={{ textAlign: 'right' }}>{(item.price / 100).toFixed(2)}$</td>
+                            <td style={{ textAlign: 'right' }}>{item.quantity}</td>
+                            <td style={{ textAlign: 'right' }}>{((item.price / 100) * item.quantity).toFixed(2)}$</td>
+                            <td style={{ textAlign: 'right' }}>
+                                <button style={{ color: 'red' }}>
+                                    Delete
+                                </button>
+                            </td>
+                        </tr>
+                    ))}
+                </tbody>
+            </table>
+        </div>
+        </div>
     )
 }
+//THis code or part commented out because material UI lab causing error so I changed
 
 /*
 import { Typography } from "@mui/material";
