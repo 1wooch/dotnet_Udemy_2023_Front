@@ -1,8 +1,28 @@
-import { Typography } from "@mui/material";
+import { Box, IconButton, Typography } from "@mui/material";
 import { useStoreContext } from "../../app/context/StoreContext";
+import { Add, Remove } from "@mui/icons-material";
+import { useState } from "react";
+import agent from "../../app/api/agent";
 
 export default function BasketPage(){
-    const {basket}=useStoreContext();
+    const {basket,setBasket,removeItem}=useStoreContext();
+    const [loading, setLoading] = useState(false);
+
+    function handleRemoveItem(productId:number,quantity=1){
+        setLoading(true);
+        agent.Basket.removeItem(productId,quantity)
+        .then(()=>removeItem(productId,quantity))
+        .catch(err=>console.log(err))
+        .finally(()=>setLoading(false));
+    }
+
+    function handleAddItem(productId:number){
+        setLoading(true);
+        agent.Basket.addItem(productId)
+        .then(basket=>setBasket(basket))
+        .catch(err=>console.log(err))
+        .finally(()=>setLoading(false));
+    }
 
     if(!basket) return <Typography variant='h3'>Your Baket is Empty</Typography>
 
@@ -16,20 +36,29 @@ export default function BasketPage(){
                     <tr>
                         <th>Product (100g serving)</th>
                         <th style={{ textAlign: 'right' }}>Price</th>
-                        <th style={{ textAlign: 'right' }}>Quantity</th>
+                        <th style={{ textAlign: 'center' }}>Quantity</th>
                         <th style={{ textAlign: 'right' }}>Subtotal</th>
                         <th style={{ textAlign: 'right' }}></th>
                     </tr>
-                </thead>
+                </thead> 
                 <tbody>
                     {basket.items.map(item => (
                         <tr key={item.productId}>
-                            <td>{item.name}</td>
+                            <Box display='flex' alignItems='center'>
+                                <img src={item.pictureUrl} alt={item.name} style={{height:50, marginRight:20}}/>
+                                <span>{item.name}</span>
+                            </Box>
                             <td style={{ textAlign: 'right' }}>{(item.price / 100).toFixed(2)}$</td>
-                            <td style={{ textAlign: 'right' }}>{item.quantity}</td>
+                            <td style={{ textAlign: 'center' }}>
+                                <IconButton color='error'/> {/*this part should be loading button */}
+                                <Remove onClick={()=>handleRemoveItem(item.productId)}/>
+                                {item.quantity}
+                                <IconButton color='error'/>
+                                <Add onClick={()=>handleAddItem(item.productId)}/>
+                            </td>
                             <td style={{ textAlign: 'right' }}>{((item.price / 100) * item.quantity).toFixed(2)}$</td>
                             <td style={{ textAlign: 'right' }}>
-                                <button style={{ color: 'red' }}>
+                                <button onClick={()=>handleRemoveItem(item.productId,item.quantity)} style={{ color: 'red' }}>
                                     Delete
                                 </button>
                             </td>
