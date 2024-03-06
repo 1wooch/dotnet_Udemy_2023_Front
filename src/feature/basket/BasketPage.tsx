@@ -6,22 +6,26 @@ import agent from "../../app/api/agent";
 
 export default function BasketPage(){
     const {basket,setBasket,removeItem}=useStoreContext();
-    const [loading, setLoading] = useState(false);
-
-    function handleRemoveItem(productId:number,quantity=1){
-        setLoading(true);
+    const [status, setStatus] = useState({
+        loading:false,
+        name:''
+    });
+    //no need since we can't use loading button
+    
+    function handleRemoveItem(productId:number,quantity=1,name:string){
+        setStatus({loading:true,name});        
         agent.Basket.removeItem(productId,quantity)
         .then(()=>removeItem(productId,quantity))
         .catch(err=>console.log(err))
-        .finally(()=>setLoading(false));
+        .finally(()=>setStatus({loading:false,name}));
     }
 
-    function handleAddItem(productId:number){
-        setLoading(true);
+    function handleAddItem(productId:number,name:string){
+        setStatus({loading:true,name});
         agent.Basket.addItem(productId)
         .then(basket=>setBasket(basket))
         .catch(err=>console.log(err))
-        .finally(()=>setLoading(false));
+        .finally(()=>setStatus({loading:false,name}));
     }
 
     if(!basket) return <Typography variant='h3'>Your Baket is Empty</Typography>
@@ -51,14 +55,14 @@ export default function BasketPage(){
                             <td style={{ textAlign: 'right' }}>{(item.price / 100).toFixed(2)}$</td>
                             <td style={{ textAlign: 'center' }}>
                                 <IconButton color='error'/> {/*this part should be loading button */}
-                                <Remove onClick={()=>handleRemoveItem(item.productId)}/>
+                                <Remove onClick={()=>handleRemoveItem(item.productId,1,"rem"+item.productId)}/>
                                 {item.quantity}
                                 <IconButton color='error'/>
-                                <Add onClick={()=>handleAddItem(item.productId)}/>
+                                <Add onClick={()=>handleAddItem(item.productId,"add"+item.productId)}/>
                             </td>
                             <td style={{ textAlign: 'right' }}>{((item.price / 100) * item.quantity).toFixed(2)}$</td>
                             <td style={{ textAlign: 'right' }}>
-                                <button onClick={()=>handleRemoveItem(item.productId,item.quantity)} style={{ color: 'red' }}>
+                                <button onClick={()=>handleRemoveItem(item.productId,item.quantity,"Wrem"+item.productId)} style={{ color: 'red' }}>
                                     Delete
                                 </button>
                             </td>
