@@ -1,4 +1,4 @@
-import { TableContainer, Paper, Table, TableBody, TableRow, TableCell, Typography } from "@mui/material";
+import { TableContainer, Paper, Table, TableBody, TableRow, TableCell } from "@mui/material";
 import { useStoreContext } from "../../app/context/StoreContext";
 import { useEffect, useState } from "react";
 
@@ -10,14 +10,14 @@ export default function BasketSummary() {
     const { basket } = useStoreContext();
 
     useEffect(() => {
-        let calculatedSubtotal = 0;
-        // Calculate subtotal
-        basket?.items.forEach(item => {
-          calculatedSubtotal += item.quantity * item.price;
-        });
-        // Format subtotal as currency with two decimal places
-            setSubtotal((calculatedSubtotal / 100).toFixed(2));
-      }, [basket]);
+            let calculatedSubtotal = 0;
+            // Calculate subtotal
+            basket?.items.forEach(item => {
+                calculatedSubtotal += item.quantity * item.price;
+            });
+            // Format subtotal as currency with two decimal places
+            setSubtotal(parseFloat((calculatedSubtotal / 100).toFixed(2)));
+        }, [basket]);
       
     useEffect(() => {
         // Adjust delivery fee based on subtotal
