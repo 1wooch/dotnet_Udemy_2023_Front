@@ -1,4 +1,4 @@
-import { Divider, Grid, Table, TableBody, TableCell, TableContainer, TableRow, Typography } from "@mui/material";
+import { Button, Divider, Grid, Table, TableBody, TableCell, TableContainer, TableRow, TextField, Typography } from "@mui/material";
 import { useEffect } from "react";
 import { useParams } from "react-router-dom";
 import { Product } from "../../app/models/Product";
@@ -6,21 +6,28 @@ import { useState } from "react"; // Import the useState hook
 import agent from "../../app/api/agent";
 import NotFound from "../../app/errors/NotFound";
 import LoadingComponent from "../../app/layout/LoadingComponent";
+import { useStoreContext } from "../../app/context/StoreContext";
 
 export default function ProductDetails(){
     const {id}=useParams<{id:string}>();
-    
 
     const [product, setProduct] = useState<Product | null>(null); 
     const [loading, setLoading] = useState(true);
 
+    const {basket} = useStoreContext();
+    const [quantity, setQuantity] = useState(0);
+    const [submitting, setSubmitting] = useState(false);
+    const item = basket?.items.find(x=>x.productId===parseInt(product?.id));
+
     useEffect(()=>{
-        id && agent.Catalog.details(parseInt(id))
+        if(item) setQuantity(item.quantity);
+
+        agent.Catalog.details(parseInt(id!))
         .then(response => setProduct(response))
         .catch(error=>console.log(error.response))
         .finally(()=>setLoading(false));
         
-    },[id]);
+    },[id,item]);
 
     if(loading) return <LoadingComponent message="Loading Product..."/>
 
@@ -61,6 +68,28 @@ export default function ProductDetails(){
                         </TableBody>
                     </Table>
                 </TableContainer>
+                <Grid container spacing={2}>
+                    <Grid item xs={6}>
+                        <TextField
+                            variant="outlined"
+                            type="number"
+                            label="Quantity in Cart"
+                            fullWidth
+                            value={quantity}
+                        />
+                    </Grid>
+                    <Grid item xs={6}>
+                        <Button
+                            sx={{height:'100%'}}
+                            color="primary"
+                            size="large"
+                            variant="contained"
+                            fullWidth
+                        >
+                            {item ? 'Update Cart' : 'Add to Cart'}
+                        </Button>
+                    </Grid>
+                </Grid>
             </Grid>
  
         </Grid>
