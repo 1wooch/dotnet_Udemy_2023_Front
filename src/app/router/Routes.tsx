@@ -8,6 +8,7 @@ import ProductDetails from "../../feature/catalog/ProductDetails";
 import ServerError from "../errors/ServerError";
 import NotFound from "../errors/NotFound";
 import BasketPage from "../../feature/basket/BasketPage";
+import CheckOutPage from "../../feature/checkout/CheckOutPage";
 
 export const router =createBrowserRouter([
     {
@@ -45,6 +46,10 @@ export const router =createBrowserRouter([
             {
                 path:"basket",
                 element:<BasketPage/>
+            },
+            {
+                path:"checkout",
+                element:<CheckOutPage/>
             },
             {
                 path:"*",
