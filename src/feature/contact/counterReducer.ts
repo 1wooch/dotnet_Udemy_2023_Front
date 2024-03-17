@@ -7,12 +7,17 @@ export interface CounterState {
     title:string;
 }
 
+export interface counterReduceActionInput{
+    type:string;
+}
+
 const initialState:CounterState={
     data:42,
     title:'Yarc'
 }
 
-export default function counterReducer(state=initialState,action:any){
+export default function counterReducer(state=initialState,action:counterReduceActionInput){
+    console.log(action)
     switch(action.type){
         case INCREMENT_COUNTER:
             return {...state,data:state.data+1};
