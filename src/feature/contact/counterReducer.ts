@@ -9,6 +9,7 @@ export interface CounterState {
 
 export interface counterReduceActionInput{
     type:string;
+    payload:number;
 }
 
 const initialState:CounterState={
@@ -16,13 +17,29 @@ const initialState:CounterState={
     title:'Yarc'
 }
 
+export function increment(amount=1){
+    return {
+        type:INCREMENT_COUNTER,
+        payload:amount
+    
+    }
+}
+
+export function decrement(amount=1){
+    return {
+        type:DECREMENT_COUNTER,
+        payload:amount
+    
+    }
+}
+
+
 export default function counterReducer(state=initialState,action:counterReduceActionInput){
-    console.log(action)
     switch(action.type){
         case INCREMENT_COUNTER:
-            return {...state,data:state.data+1};
+            return {...state,data:state.data+action.payload};
         case DECREMENT_COUNTER:
-            return {...state,data:state.data-1};
+            return {...state,data:state.data-action.payload};
     }
     return state;
 
