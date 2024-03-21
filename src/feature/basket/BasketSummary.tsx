@@ -1,13 +1,13 @@
 import { TableContainer, Paper, Table, TableBody, TableRow, TableCell } from "@mui/material";
-import { useStoreContext } from "../../app/context/StoreContext";
 import { useEffect, useState } from "react";
+import { useAppSelector } from "../../app/store/configureStore";
 
 
 export default function BasketSummary() {
     
     const [subtotal, setSubtotal] = useState(0);
     const [deliveryFee, setDeliveryFee] = useState(15);
-    const { basket } = useStoreContext();
+    const {basket} = useAppSelector(state=>state.basket);
 
     useEffect(() => {
             let calculatedSubtotal = 0;

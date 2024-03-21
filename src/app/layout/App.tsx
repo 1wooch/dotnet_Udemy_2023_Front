@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import Header from "./Heder";
+import Header from "./Header";
 import { Container, CssBaseline, ThemeProvider, createTheme } from "@mui/material";
 import { Outlet } from "react-router-dom";
 import { ToastContainer } from "react-toastify";
