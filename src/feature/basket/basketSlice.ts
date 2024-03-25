@@ -13,10 +13,10 @@ const initialState:BasketState={
     status:'idle'
 }
 
-export const addBasketItemAsync = createAsyncThunk<Basket,{productId:number,quantity:number}>(
+export const addBasketItemAsync = createAsyncThunk<Basket,{productId:number,quantity?:number}>(
     //createAsyncThunk accepts two arguments: a string action type and a function that returns a promise
     'basket/addBasketItemAsync',
-    async ({productId,quantity})=>{
+    async ({productId,quantity=1})=>{
         try{
             return await agent.Basket.addItem(productId,quantity);
         }catch(error){
@@ -35,7 +35,6 @@ export const basketSlice=createSlice({
         removeItem:(state,action)=>{
             const{productId,quantity}=action.payload;
             const itemIndex = state.basket?.items.findIndex(x=>x.productId===productId);
-            console.log(itemIndex)
             if(itemIndex === -1 || itemIndex === undefined){
                 return;
             }
@@ -47,8 +46,7 @@ export const basketSlice=createSlice({
     },
     extraReducers:(builder)=>{
         builder.addCase(addBasketItemAsync.pending,(state,action)=>{
-            console.log(action);
-            state.status='pendingAddItem';
+            state.status='pendingAddItem'+action.meta.arg.productId;
         });
         builder.addCase(addBasketItemAsync.fulfilled,(state,action)=>{
             //when it fulfilled (Success)
