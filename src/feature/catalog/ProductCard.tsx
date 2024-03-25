@@ -3,11 +3,9 @@ import { Product } from "../../app/models/Product";
 import { Link } from "react-router-dom";
 import { useState } from "react";
 import agent from "../../app/api/agent";
-import { useStoreContext } from "../../app/context/StoreContext";
 import { currencyFormat } from "../../app/util/util";
 import { useAppDispatch } from "../../app/store/configureStore";
 import { setBasket } from "../basket/basketSlice";
-//import { LoadingButton } from "@mui/lab";
 
 interface Props{
     product:Product;
