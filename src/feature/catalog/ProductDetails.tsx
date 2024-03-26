@@ -7,7 +7,7 @@ import agent from "../../app/api/agent";
 import NotFound from "../../app/errors/NotFound";
 import LoadingComponent from "../../app/layout/LoadingComponent";
 import { useAppDispatch, useAppSelector } from "../../app/store/configureStore";
-import { setBasket, removeItem } from "../basket/basketSlice";
+import { addBasketItemAsync, removeBasketItemAsync } from "../basket/basketSlice";
 
 export default function ProductDetails(){
     const {id}=useParams<{id:string}>();
@@ -19,8 +19,7 @@ export default function ProductDetails(){
     const dispatch=useAppDispatch();
 
     const [quantity, setQuantity] = useState(0);
-    const [submitting, setSubmitting] = useState(false);
-    const item = basket?.items.find(x=>x.productId===parseInt(product?.id));
+    const item = basket?.items.find(x=>x.productId===product?.id);
 
     useEffect(()=>{
         if(item) setQuantity(item.quantity);
@@ -39,22 +38,13 @@ export default function ProductDetails(){
     }
 
     function handleUpdateCart(){
-        if(!product)return;
-        setSubmitting(true);
+    
         if(!item ||quantity>item.quantity){
             const updatedQuantity=item? quantity-item.quantity:quantity;
-            agent.Basket.addItem(product.id!,updatedQuantity)
-            .then(
-                basket=>dispatch(setBasket(basket))
-            )
-            .catch(error=>console.log(error.response))
-            .finally(()=>setSubmitting(false));
+            dispatch(addBasketItemAsync({productId:product!.id!,quantity:updatedQuantity}));
         }else{
             const updatedQuantity = item.quantity - quantity;
-            agent.Basket.removeItem(product.id!,updatedQuantity)
-            .then(()=>dispatch(removeItem({productId:product.id!,quantity:updatedQuantity}))
-            )
-            .finally(()=>setSubmitting(false));
+            dispatch(removeBasketItemAsync({productId:product!.id!,quantity:updatedQuantity}));
         }
     }
 

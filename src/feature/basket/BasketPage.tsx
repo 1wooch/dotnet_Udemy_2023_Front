@@ -1,37 +1,17 @@
 import { Box, Button, Grid, IconButton, Typography } from "@mui/material";
 import { Add, Remove } from "@mui/icons-material";
-import { useState } from "react";
-import agent from "../../app/api/agent";
 import React from "react";
 import BasketSummary from "./BasketSummary";
 import { Link } from "react-router-dom";
-import { useAppDispatch, useAppSelector } from "../../app/store/configureStore";
-import { removeItem, setBasket } from "../basket/basketSlice";
+import { useAppDispatch } from "../../app/store/configureStore";
+import { addBasketItemAsync, removeBasketItemAsync } from "../basket/basketSlice";
 
 export default function BasketPage(){
     const {basket} = useAppSelector(state=>state.basket);
     const dispatch=useAppDispatch();
-    const [status, setStatus] = useState({
-        loading:false,
-        name:''
-    });
     //no need since we can't use loading button
     
-    function handleRemoveItem(productId:number,quantity=1,name:string){
-        setStatus({loading:true,name});        
-        agent.Basket.removeItem(productId,quantity)
-        .then(()=>dispatch(removeItem({productId,quantity})))
-        .catch(err=>console.log(err))
-        .finally(()=>setStatus({loading:false,name}));
-    }
-
-    function handleAddItem(productId:number,name:string){
-        setStatus({loading:true,name});
-        agent.Basket.addItem(productId)
-        .then(basket=>dispatch(setBasket(basket)))
-        .catch(err=>console.log(err))
-        .finally(()=>setStatus({loading:false,name}));
-    }
+    
 
     if(!basket) return <Typography variant='h3'>Your Baket is Empty</Typography>
 
@@ -61,14 +41,14 @@ export default function BasketPage(){
                                     <td style={{ textAlign: 'right' }}>{(item.price / 100).toFixed(2)}$</td>
                                     <td style={{ textAlign: 'center' }}>
                                         <IconButton color='error'/> {/*this part should be loading button */}
-                                        <Remove onClick={()=>handleRemoveItem(item.productId,1,"rem"+item.productId)}/>
+                                        <Remove onClick={()=>dispatch(removeBasketItemAsync({productId:item.productId,quantity:1}))}/>
                                         {item.quantity}
                                         <IconButton color='error'/>
-                                        <Add onClick={()=>handleAddItem(item.productId,"add"+item.productId)}/>
+                                        <Add onClick={()=>dispatch(addBasketItemAsync({productId:item.productId}))}/>
                                     </td>
                                     <td style={{ textAlign: 'right' }}>{((item.price / 100) * item.quantity).toFixed(2)}$</td>
                                     <td style={{ textAlign: 'right' }}>
-                                        <button onClick={()=>handleRemoveItem(item.productId,item.quantity,"Wrem"+item.productId)} style={{ color: 'red' }}>
+                                        <button onClick={()=>dispatch(removeBasketItemAsync({productId:item.productId,quantity:item.quantity}))} style={{ color: 'red' }}>
                                             Delete
                                         </button>
                                     </td>
@@ -97,6 +77,11 @@ export default function BasketPage(){
         
     )
 }
+
+import { TypedUseSelectorHook, useSelector } from "react-redux";
+import { RootState } from "../../app/store/configureStore";
+
+const useAppSelector: TypedUseSelectorHook<RootState> = useSelector;
 //THis code or part commented out because material UI lab causing error so I changed
 
 /*
