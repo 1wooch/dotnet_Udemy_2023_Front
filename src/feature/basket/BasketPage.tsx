@@ -41,14 +41,14 @@ export default function BasketPage(){
                                     <td style={{ textAlign: 'right' }}>{(item.price / 100).toFixed(2)}$</td>
                                     <td style={{ textAlign: 'center' }}>
                                         <IconButton color='error'/> {/*this part should be loading button */}
-                                        <Remove onClick={()=>dispatch(removeBasketItemAsync({productId:item.productId,quantity:1}))}/>
+                                        <Remove onClick={()=>dispatch(removeBasketItemAsync({productId:item.productId,quantity:1,name:"add"}))}/>
                                         {item.quantity}
                                         <IconButton color='error'/>
                                         <Add onClick={()=>dispatch(addBasketItemAsync({productId:item.productId}))}/>
                                     </td>
                                     <td style={{ textAlign: 'right' }}>{((item.price / 100) * item.quantity).toFixed(2)}$</td>
                                     <td style={{ textAlign: 'right' }}>
-                                        <button onClick={()=>dispatch(removeBasketItemAsync({productId:item.productId,quantity:item.quantity}))} style={{ color: 'red' }}>
+                                        <button onClick={()=>dispatch(removeBasketItemAsync({productId:item.productId,quantity:item.quantity,name:'del'}))} style={{ color: 'red' }}>
                                             Delete
                                         </button>
                                     </td>
