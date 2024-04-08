@@ -4,6 +4,7 @@ import ProductList from "./ProductList";
 import agent from "../../app/api/agent";
 import LoadingComponent from "../../app/layout/LoadingComponent";
 
+//97 not working need to double check
 
 export default function Catalog(){
 
