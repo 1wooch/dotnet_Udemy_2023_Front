@@ -1,22 +1,21 @@
 import { Button, Divider, Grid, Table, TableBody, TableCell, TableContainer, TableRow, TextField, Typography } from "@mui/material";
 import { ChangeEvent, useEffect } from "react";
 import { useParams } from "react-router-dom";
-import { Product } from "../../app/models/Product";
 import { useState } from "react"; // Import the useState hook
-import agent from "../../app/api/agent";
 import NotFound from "../../app/errors/NotFound";
 import LoadingComponent from "../../app/layout/LoadingComponent";
 import { useAppDispatch, useAppSelector } from "../../app/store/configureStore";
 import { addBasketItemAsync, removeBasketItemAsync } from "../basket/basketSlice";
+import { fetchProductAsync, productSelectors } from "./catalogSlice";
 
 export default function ProductDetails(){
     const {id}=useParams<{id:string}>();
 
-    const [product, setProduct] = useState<Product | null>(null); 
-    const [loading, setLoading] = useState(true);
-
-    const {basket} = useAppSelector(state=>state.basket);
-    const dispatch=useAppDispatch();
+    const dispatch = useAppDispatch();
+    const { basket, status } = useAppSelector(state => state.basket);
+    const product = useAppSelector(state => productSelectors.selectById(state, parseInt(id!)));
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    const {status: productStatus} = useAppSelector(state => state.catalog);
 
     const [quantity, setQuantity] = useState(0);
     const item = basket?.items.find(x=>x.productId===product?.id);
@@ -24,12 +23,8 @@ export default function ProductDetails(){
     useEffect(()=>{
         if(item) setQuantity(item.quantity);
 
-        agent.Catalog.details(parseInt(id!))
-        .then(response => setProduct(response))
-        .catch(error=>console.log(error.response))
-        .finally(()=>setLoading(false));
-        
-    },[id,item]);
+        if (!product && id) dispatch(fetchProductAsync(parseInt(id)))
+    }, [id, item, product, dispatch]);
 
     function handleInputChange(event:ChangeEvent<HTMLInputElement>){
         if(parseInt(event.currentTarget.value)>=0){
@@ -48,8 +43,7 @@ export default function ProductDetails(){
         }
     }
 
-    if(loading) return <LoadingComponent message="Loading Product..."/>
-
+    if (productStatus.includes('pending')) return <LoadingComponent message='Loading product...' />
     if(!product) return <NotFound/>
 
     return(
@@ -119,4 +113,3 @@ export default function ProductDetails(){
     )
     
 }
-

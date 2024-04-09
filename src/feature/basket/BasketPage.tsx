@@ -7,8 +7,8 @@ import { useAppDispatch } from "../../app/store/configureStore";
 import { addBasketItemAsync, removeBasketItemAsync } from "../basket/basketSlice";
 
 export default function BasketPage(){
-    const {basket} = useAppSelector(state=>state.basket);
     const dispatch=useAppDispatch();
+    const { basket, status } = useAppSelector(state => state.basket);
     //no need since we can't use loading button
     
     
@@ -41,7 +41,7 @@ export default function BasketPage(){
                                     <td style={{ textAlign: 'right' }}>{(item.price / 100).toFixed(2)}$</td>
                                     <td style={{ textAlign: 'center' }}>
                                         <IconButton color='error'/> {/*this part should be loading button */}
-                                        <Remove onClick={()=>dispatch(removeBasketItemAsync({productId:item.productId,quantity:1,name:"add"}))}/>
+                                        <Remove onClick={()=>dispatch(removeBasketItemAsync({productId:item.productId,quantity:1,name:"Rem"}))}/>
                                         {item.quantity}
                                         <IconButton color='error'/>
                                         <Add onClick={()=>dispatch(addBasketItemAsync({productId:item.productId}))}/>

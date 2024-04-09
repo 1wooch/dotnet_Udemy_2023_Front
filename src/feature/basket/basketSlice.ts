@@ -1,7 +1,6 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import agent from "../../app/api/agent";
 import { Basket } from "../../app/models/Basket";
-
 interface BasketState {
     basket: Basket | null;
     status: string;
@@ -17,20 +16,23 @@ export const addBasketItemAsync = createAsyncThunk<Basket, {productId: number, q
     async ({productId, quantity = 1}, thunkAPI) => {
         try {
             return await agent.Basket.addItem(productId, quantity);
-        } catch (error) {
-            return thunkAPI.rejectWithValue({error: error})
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        } catch (error: any) {
+            return thunkAPI.rejectWithValue({error: error.data})
         }
     }
 )
 
 export const removeBasketItemAsync = createAsyncThunk<void, 
-    {productId: number, quantity: number, name?: string}>(
+    {productId: number, quantity: number, name?: string}
+    >(
     'basket/removeBasketItemASync',
     async ({productId, quantity}, thunkAPI) => {
         try {
             await agent.Basket.removeItem(productId, quantity);
-        } catch (error) {
-            return thunkAPI.rejectWithValue({error: error!})
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        } catch (error:any) {
+            return thunkAPI.rejectWithValue({error: error.data})
         }
     }
 )
