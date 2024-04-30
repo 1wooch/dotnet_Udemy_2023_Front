@@ -72,7 +72,16 @@ export const catalogSlice = createSlice({
         types: [],
         productparams: initParams()
     }),
-    reducers: {},
+    reducers: {
+        setProductParams:(state, action)=>{
+            state.productsLoaded = false;
+            state.productparams = {...state.productparams, ...action.payload}
+        },
+        resetProductParams: (state)=> {
+            state.productparams = initParams();
+        }
+
+    },
     extraReducers: (builder => {
         builder.addCase(fetchProductsAsync.pending, (state) => {
             state.status = 'pendingFetchProducts'
@@ -118,3 +127,5 @@ export const catalogSlice = createSlice({
 })
 
 export const productSelectors = productsAdapter.getSelectors((state: RootState) => state.catalog);
+
+export const {setProductParams, resetProductParams} = catalogSlice.actions;
