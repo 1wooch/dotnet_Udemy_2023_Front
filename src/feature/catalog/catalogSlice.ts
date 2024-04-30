@@ -1,7 +1,17 @@
 import { createAsyncThunk, createEntityAdapter, createSlice } from "@reduxjs/toolkit";
-import { Product } from "../../app/models/Product";
+import { Product, ProductParams } from "../../app/models/Product";
 import agent from "../../app/api/agent";
 import { RootState } from "@reduxjs/toolkit/query";
+
+interface CatalogState{
+    productsLoaded: boolean;
+    filtersLoaded: boolean;
+    status: string;
+    brands: string[];
+    types: string[];
+    productparams: ProductParams;
+
+}
 
 const productsAdapter = createEntityAdapter<Product>();
 
@@ -39,15 +49,28 @@ export const fetchFilters = createAsyncThunk(
     }
 )
 
+function initParams(){
+    return {
+        orderBy: 'name',
+        searchTerm: '',
+        types: [],
+        brands: [],
+        pageNumber: 1,
+        pageSize: 6
+    }
+
+}
 
 export const catalogSlice = createSlice({
     name: 'catalog',
-    initialState: productsAdapter.getInitialState({
+    initialState: productsAdapter.getInitialState<CatalogState>({
+
         productsLoaded: false,
         filtersLoaded: false,
         status: 'idle',
-        brands:[],
-        types:[]
+        brands: [],
+        types: [],
+        productparams: initParams()
     }),
     reducers: {},
     extraReducers: (builder => {
