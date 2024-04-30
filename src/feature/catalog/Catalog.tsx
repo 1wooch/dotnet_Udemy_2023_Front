@@ -3,7 +3,8 @@ import ProductList from "./ProductList";
 import LoadingComponent from "../../app/layout/LoadingComponent";
 import { useAppSelector, useAppDispatch } from "../../app/store/configureStore";
 import { productSelectors, fetchProductsAsync, fetchFilters} from "./catalogSlice";
-import { Box, Checkbox, FormControl, FormControlLabel,  Grid, Pagination, Paper, Radio, RadioGroup, TextField, Typography } from "@mui/material";
+import { Box, Checkbox, FormControl, FormControlLabel,  Grid, Pagination, Paper, Radio, RadioGroup, Typography } from "@mui/material";
+import ProductSearch from "./productSearch";
 
 //97 not working need to double check
 
@@ -31,17 +32,13 @@ import { Box, Checkbox, FormControl, FormControlLabel,  Grid, Pagination, Paper,
         <Grid container spacing={4}>
             <Grid item xs={3}>
               <Paper sx={{mb:2}}>
-                <TextField
-                  label="Search products"
-                  variant="outlined"
-                  fullWidth
-                />
+                <ProductSearch/>
               </Paper>
               <Paper sx={{mb:2, p:2}}>
                 <FormControl component="fieldset">
                     <RadioGroup>
                         {sortOptions.map(({value,label})=>(
-                            <FormControlLabel key={value} value={value} control={<Radio />} label={label} key={value}/>
+                            <FormControlLabel key={value} value={value} control={<Radio />} label={label}/>
                         ))}
                     </RadioGroup>
                 </FormControl>
@@ -50,7 +47,7 @@ import { Box, Checkbox, FormControl, FormControlLabel,  Grid, Pagination, Paper,
                 <FormControl component="fieldset">
                     <RadioGroup>
                         {brands.map(brand => (
-                            <FormControlLabel key={brand} value={brand} control={<Checkbox />} label={brand} key={brand}/>
+                            <FormControlLabel key={brand} value={brand} control={<Checkbox />} label={brand}/>
                         ))}
                     </RadioGroup>
                 </FormControl>
@@ -59,7 +56,7 @@ import { Box, Checkbox, FormControl, FormControlLabel,  Grid, Pagination, Paper,
                 <FormControl component="fieldset">
                     <RadioGroup>
                         {types.map(type => (
-                            <FormControlLabel key={type} value={type} control={<Checkbox />} label={type} key={type}/>
+                            <FormControlLabel key={type} value={type} control={<Checkbox />} label={type}/>
                         ))}
                     </RadioGroup>
                 </FormControl>
