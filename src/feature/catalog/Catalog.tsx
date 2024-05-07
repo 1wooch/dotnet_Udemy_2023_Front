@@ -2,9 +2,10 @@ import { useEffect } from "react";
 import ProductList from "./ProductList";
 import LoadingComponent from "../../app/layout/LoadingComponent";
 import { useAppSelector, useAppDispatch } from "../../app/store/configureStore";
-import { productSelectors, fetchProductsAsync, fetchFilters} from "./catalogSlice";
-import { Box, Checkbox, FormControl, FormControlLabel,  Grid, Pagination, Paper, Radio, RadioGroup, Typography } from "@mui/material";
+import { productSelectors, fetchProductsAsync, fetchFilters, setProductParams} from "./catalogSlice";
+import { Box, Checkbox, FormControl, FormControlLabel,  Grid, Pagination, Paper, RadioGroup, Typography } from "@mui/material";
 import ProductSearch from "./productSearch";
+import RadioButtonGroup from "../../app/components/RadiobuttonGroup";
 
 //97 not working need to double check
 
@@ -15,7 +16,7 @@ import ProductSearch from "./productSearch";
   ]
   export default function Catalog() {
     const products = useAppSelector(productSelectors.selectAll);
-    const {productsLoaded, status, filtersLoaded, brands, types} = useAppSelector(state => state.catalog);
+    const {productsLoaded, status, filtersLoaded, brands, types, productparams} = useAppSelector(state => state.catalog);
     const dispatch = useAppDispatch();
 
     useEffect(() => {
@@ -35,13 +36,11 @@ import ProductSearch from "./productSearch";
                 <ProductSearch/>
               </Paper>
               <Paper sx={{mb:2, p:2}}>
-                <FormControl component="fieldset">
-                    <RadioGroup>
-                        {sortOptions.map(({value,label})=>(
-                            <FormControlLabel key={value} value={value} control={<Radio />} label={label}/>
-                        ))}
-                    </RadioGroup>
-                </FormControl>
+                <RadioButtonGroup 
+                  selectedValue={productparams.orderBy}
+                  options={sortOptions}
+                  onChange={(event) => dispatch(setProductParams({ orderBy: event.target.value }))}
+                />
               </Paper>
               <Paper sx={{mb:2, p:2}}>
                 <FormControl component="fieldset">
