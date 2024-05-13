@@ -6,6 +6,7 @@ import { productSelectors, fetchProductsAsync, fetchFilters, setProductParams} f
 import { Box, Checkbox, FormControl, FormControlLabel,  Grid, Pagination, Paper, RadioGroup, Typography } from "@mui/material";
 import ProductSearch from "./productSearch";
 import RadioButtonGroup from "../../app/components/RadiobuttonGroup";
+import CheckBoxButtons from "../../app/components/CheckboxButtons";
 
 //97 not working need to double check
 
@@ -43,13 +44,11 @@ import RadioButtonGroup from "../../app/components/RadiobuttonGroup";
                 />
               </Paper>
               <Paper sx={{mb:2, p:2}}>
-                <FormControl component="fieldset">
-                    <RadioGroup>
-                        {brands.map(brand => (
-                            <FormControlLabel key={brand} value={brand} control={<Checkbox />} label={brand}/>
-                        ))}
-                    </RadioGroup>
-                </FormControl>
+                <CheckBoxButtons 
+                  items={brands}
+                  checked={productparams.brands}
+                  onChange={(brands:string[]) => dispatch(setProductParams({ brands }))}
+                />
               </Paper>
               <Paper sx={{mb:2, p:2}}>
                 <FormControl component="fieldset">
