@@ -76,10 +76,18 @@ const Basket={
 
 }
 
+const Account = {
+    login: (values: any) => request.post('account/login', values),
+    register: (values: any) => request.post('account/register', values),
+    currentUser: () => request.get('account/currentUser'),
+
+}
+
 const agent = {
     Catalog,
     TestErrors,
-    Basket
+    Basket,
+    Account
 }
 
 
