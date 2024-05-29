@@ -16,11 +16,18 @@ import { FieldValues, useForm } from 'react-hook-form';
 export default function Login() {
 
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    const {register,handleSubmit,formState:{isSubmitting}} = useForm();
+    const {register,handleSubmit,formState:{isSubmitting, errors, isValid}} = useForm(
+        {
+            mode: 'onTouched'
+        }
+    );
 
     async function submitForm(data: FieldValues){
-        await agent.Account.login(data);
-
+        try{
+            await agent.Account.login(data);
+        }catch(error){
+            console.log(error);
+        }
     }
 
     return (
@@ -38,7 +45,9 @@ export default function Login() {
                 fullWidth
                 label="Username"
                 autoFocus
-                {...register('username')} 
+                {...register('username', {required: 'Username is required'})} 
+                error={!!errors.username}
+                helperText={errors?.username?.message as string}
                 />
                 <TextField
                 margin="normal"
@@ -46,10 +55,13 @@ export default function Login() {
                 label="Password"
                 type="password"
                 id="password"
-                {...register('password')}
+                {...register('password', {required: 'Password is required'})}
+                error={!!errors.password}
+                helperText={errors?.password?.message as string}
                 />
             
                 <Button
+                //disable={!isValid}
                 type="submit"
                 fullWidth
                 variant="contained"
