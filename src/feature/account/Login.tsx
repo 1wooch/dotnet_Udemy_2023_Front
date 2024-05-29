@@ -10,23 +10,15 @@ import Container from '@mui/material/Container';
 import { Paper } from '@mui/material';
 import { Link } from 'react-router-dom';
 import agent from '../../app/api/agent';
+import { FieldValues, useForm } from 'react-hook-form';
 
 // TODO remove, this demo shouldn't need to reset the theme.
 export default function Login() {
 
-    const [values, setValues] = React.useState({
-        username:'',
-        password:''
-    })
-        
-    const handleSubmit = (event:any) => {
-        event.preventDefault();
-        agent.Account.login(values);
-    };
+    const {register,handleSubmit,formState:{isSubmitting}} = useForm();
 
-    function handleInputChange(event:any){
-        const {name,value} = event.target;
-        setValues({...values, [name]:value});
+    async function submitForm(data: FieldValues){
+        await agent.Account.login(data);
 
     }
 
@@ -39,25 +31,21 @@ export default function Login() {
             <Typography component="h1" variant="h5">
                 Sign in
             </Typography>
-            <Box component="form" onSubmit={handleSubmit} noValidate sx={{ mt: 1 }}>
+            <Box component="form" onSubmit={handleSubmit(submitForm)} noValidate sx={{ mt: 1 }}>
                 <TextField
                 margin="normal"
                 fullWidth
                 label="Username"
-                name="username"
                 autoFocus
-                onChange={handleInputChange}
-                value={values.username}
+                {...register('username')} 
                 />
                 <TextField
                 margin="normal"
                 fullWidth
-                name="password"
                 label="Password"
                 type="password"
                 id="password"
-                onChange={handleInputChange}
-                value={values.password}
+                {...register('password')}
                 />
             
                 <Button
