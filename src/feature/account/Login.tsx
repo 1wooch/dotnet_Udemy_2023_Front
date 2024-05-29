@@ -15,6 +15,7 @@ import { FieldValues, useForm } from 'react-hook-form';
 // TODO remove, this demo shouldn't need to reset the theme.
 export default function Login() {
 
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const {register,handleSubmit,formState:{isSubmitting}} = useForm();
 
     async function submitForm(data: FieldValues){
