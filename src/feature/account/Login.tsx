@@ -8,13 +8,17 @@ import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 import Typography from '@mui/material/Typography';
 import Container from '@mui/material/Container';
 import { Paper } from '@mui/material';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import agent from '../../app/api/agent';
 import { FieldValues, useForm } from 'react-hook-form';
+import { useDispatch } from 'react-redux';
+import { signInUser } from './accountSlice';
 
 // TODO remove, this demo shouldn't need to reset the theme.
 export default function Login() {
 
+    const navigate = useNavigate();
+    const dispatch = useDispatch();
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const {register,handleSubmit,formState:{isSubmitting, errors, isValid}} = useForm(
         {
@@ -23,11 +27,9 @@ export default function Login() {
     );
 
     async function submitForm(data: FieldValues){
-        try{
-            await agent.Account.login(data);
-        }catch(error){
-            console.log(error);
-        }
+        await dispatch(signInUser(data));
+        navigate('/catalog'); //go to catalog page after login
+
     }
 
     return (
