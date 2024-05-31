@@ -1,4 +1,3 @@
-import * as React from 'react';
 import Avatar from '@mui/material/Avatar';
 import Button from '@mui/material/Button';
 import TextField from '@mui/material/TextField';
@@ -9,7 +8,6 @@ import Typography from '@mui/material/Typography';
 import Container from '@mui/material/Container';
 import { Paper } from '@mui/material';
 import { Link, useNavigate } from 'react-router-dom';
-import agent from '../../app/api/agent';
 import { FieldValues, useForm } from 'react-hook-form';
 import { useDispatch } from 'react-redux';
 import { signInUser } from './accountSlice';
