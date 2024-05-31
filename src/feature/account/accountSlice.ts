@@ -3,64 +3,81 @@ import { User } from "../../app/models/user";
 import { FieldValues } from "react-hook-form";
 import agent from "../../app/api/agent";
 import { router } from "../../app/router/Routes";
+import { setBasket } from "../basket/basketSlice";
+import { toast } from "react-toastify";
 
-interface AccountState{
-    user:User|null;
-
+interface AccountState {
+    user: User | null
 }
 
-const initialState:AccountState={
-    user:null
+const initialState: AccountState = {
+    user: null
 }
 
-export const signInUser = createAsyncThunk<User,FieldValues>(
+export const signInUser = createAsyncThunk<User, FieldValues>(
     'account/signInUser',
-    async (data, thunkAPI)=>{
-        try{
-            const user = await agent.Account.login(data);
+    async (data, thunkAPI) => {
+        try {
+            const userDto = await agent.Account.login(data);
+            const {basket, ...user} = userDto;
+            if (basket) thunkAPI.dispatch(setBasket(basket));
             localStorage.setItem('user', JSON.stringify(user));
             return user;
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        }catch(error:any){
-            return thunkAPI.rejectWithValue({error:error.data})
+        } catch (error: any) {
+            return thunkAPI.rejectWithValue({error: error.data});
         }
     }
 )
 
 export const fetchCurrentUser = createAsyncThunk<User>(
-    'account/signInUser',
-    async (_, thunkAPI)=>{
-        try{
-            const user = await agent.Account.currentUser();
+    'account/fetchCurrentUser',
+    async (_, thunkAPI) => {
+        thunkAPI.dispatch(setUser(JSON.parse(localStorage.getItem('user')!)))
+        console.log(JSON.parse(localStorage.getItem('user')!));
+        try {
+            const userDto = await agent.Account.currentUser();
+            const {basket, ...user} = userDto;
+            if (basket) thunkAPI.dispatch(setBasket(basket));
             localStorage.setItem('user', JSON.stringify(user));
             return user;
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        }catch(error:any){
-            return thunkAPI.rejectWithValue({error:error.data})
+        } catch (error: any) {
+            return thunkAPI.rejectWithValue({error: error.data});
+        }
+    }, 
+    {
+        condition: () => {
+            if (!localStorage.getItem('user')) return false;
         }
     }
 )
 
-export const accountSlice=createSlice({
+export const accountSlice = createSlice({
     name: 'account',
     initialState,
-    reducers:{
-        signOut: (state) =>{
-            state.user =null;
+    reducers: {
+        signOut: (state) => {
+            state.user = null;
             localStorage.removeItem('user');
             router.navigate('/');
+        },
+        setUser: (state, action) => {
+            state.user = action.payload
         }
     },
-    extraReducers:(builder=>{
-        builder.addMatcher(isAnyOf(signInUser.fulfilled, fetchCurrentUser.fulfilled), (state, action)=>{
-            state.user = action.payload;
-
-        });
-        // eslint-disable-next-line @typescript-eslint/no-unused-vars
-        builder.addMatcher(isAnyOf(signInUser.rejected, fetchCurrentUser.rejected), (state, action)=>{
+    extraReducers: (builder => {
+        builder.addCase(fetchCurrentUser.rejected, (state) => {
             state.user = null;
+            localStorage.removeItem('user');
+            toast.error('Session expired, please login again');
+            router.navigate('/');
+        })
+        builder.addMatcher(isAnyOf(signInUser.fulfilled, fetchCurrentUser.fulfilled), (state, action) => {
+            state.user = action.payload;
         });
+        builder.addMatcher(isAnyOf(signInUser.rejected), (_state, action) => {
+            throw action.payload;
+        })
     })
 })
 
-export const {signOut} = accountSlice.actions;
+export const {signOut, setUser} = accountSlice.actions;
