@@ -3,6 +3,7 @@ import { AppBar,  Badge,  Box,    IconButton,    List,  ListItem,  Switch, Toolb
 import { Link, NavLink } from "react-router-dom";
 import { useAppSelector } from "../store/configureStore";
 import SignedInMenu from "./SignedInMenu";
+import { useEffect } from "react";
 interface Props{
     darkMode: boolean;
     handleThemeChange: () => void;
@@ -40,7 +41,7 @@ const navStyles={
 
 export default function Header({darkMode, handleThemeChange}: Props) {
     const {basket} = useAppSelector(state=>state.basket);
-    const itemCount = basket?.items.reduce((sum,item)=>sum + item.quantity,0);
+    let itemCount = basket?.items.reduce((sum,item)=>sum + item.quantity,0);
     const {user} = useAppSelector(state => state.account);
 
     return(
