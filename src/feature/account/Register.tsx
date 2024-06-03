@@ -6,21 +6,37 @@ import Box from '@mui/material/Box';
 import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 import Typography from '@mui/material/Typography';
 import Container from '@mui/material/Container';
-import { Alert, AlertTitle, ListItem, ListItemText, Paper } from '@mui/material';
-import { Link } from 'react-router-dom';
+import { Paper } from '@mui/material';
+import { Link, useNavigate } from 'react-router-dom';
 import {  useForm } from 'react-hook-form';
 import agent from '../../app/api/agent';
-import { useState } from 'react';
+import { toast } from 'react-toastify';
 
 // TODO remove, this demo shouldn't need to reset the theme.
 export default function Register() {
-    const [validationErrors, setValidationErrors] = useState([]);
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    const {register,handleSubmit,formState:{isSubmitting, errors, isValid}} = useForm(
+    const navigate = useNavigate();
+    const {register,handleSubmit,formState:{ errors},setError} = useForm(
         {
-            mode: 'onTouched'
+            mode: 'all'
         }
     );
+
+    function handleApiErrors(errors:string[]){
+        if(errors){
+            errors.forEach(error=>{
+                if(error.includes('Password')){
+                    setError('password', {message: error});
+                }
+                else if(error.includes('Username')){
+                    setError('username', {message: error});
+                }
+                else if(error.includes('Email')){
+                    setError('email', {message: error});
+                }
+            })
+        }
+    }
 
     return (
         <Container component={Paper} maxWidth="sm" 
@@ -33,7 +49,11 @@ export default function Register() {
             </Typography>
             <Box component="form" onSubmit={handleSubmit(data =>
                 {agent.Account.register(data)
-                .catch(error=>{setValidationErrors(error)})})} noValidate sx={{ mt: 1 }}>
+                .then(()=>{
+                    toast.success('Registration Successful');
+                    navigate('/login');
+                })
+                .catch(error=>{handleApiErrors(error)})})} noValidate sx={{ mt: 1 }}>
                 <TextField
                 margin="normal"
                 fullWidth
@@ -46,7 +66,13 @@ export default function Register() {
                 margin="normal"
                 fullWidth
                 label="Email"
-                {...register('email', {required: 'Email is required'})} 
+                {...register('email', {required: 'Email is required'
+                ,
+                pattern:{
+                    value: /^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/,
+                    message: 'Not a Valid Email Address'
+                }
+                })} 
                 error={!!errors.email}
                 helperText={errors?.email?.message as string}
                 />
@@ -56,23 +82,17 @@ export default function Register() {
                 label="Password"
                 type="password"
                 id="password"
-                {...register('password', {required: 'Password is required'})}
+                {...register('password', {
+                    required: 'Password is required',
+                    pattern:{
+                        value: /(?=^.{6,10}$)(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[!@#$%^&amp;*()_+}{&quot;:;'?/&gt;.&lt;,])(?!.*\s).*$/,
+                        message: 'Not a Valid Password'
+                    }})}
                 error={!!errors.password}
                 helperText={errors?.password?.message as string}
                 />
                 
-                {validationErrors.length>0 && 
-                <Alert severity='error'>
-                    <AlertTitle>Validation Error</AlertTitle>
-                    <ul>
-                        {validationErrors.map((error)=>(
-                            <ListItem key={error}>
-                                <ListItemText>{error}</ListItemText>    
-                            </ListItem>    
-                        ))}
-                    </ul>
-                </Alert>
-            }
+                
             
                 <Button
                 //disable={!isValid}

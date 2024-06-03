@@ -18,7 +18,7 @@ export default function Login() {
     const navigate = useNavigate();
     const dispatch = useDispatch();
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    const {register,handleSubmit,formState:{isSubmitting, errors, isValid}} = useForm(
+    const {register,handleSubmit,formState:{ errors}} = useForm(
         {
             mode: 'onTouched'
         }
