@@ -25,8 +25,13 @@ export default function Login() {
     );
 
     async function submitForm(data: FieldValues){
-        await dispatch(signInUser(data));
-        navigate('/catalog'); //go to catalog page after login
+        try {
+            await dispatch(signInUser(data));
+            navigate('/catalog'); //go to catalog page after login
+        }
+        catch (error: any){
+            console.log(error);
+        }
 
     }
 
