@@ -11,12 +11,19 @@ import BasketPage from "../../feature/basket/BasketPage";
 import CheckOutPage from "../../feature/checkout/CheckOutPage";
 import Login from "../../feature/account/Login";
 import Register from "../../feature/account/Register";
+import RequireAuth from "./RequireAuth";
 
 export const router =createBrowserRouter([
     {
         path: "/",
         element:<App/>,
         children:[
+            {element: <RequireAuth/>, children:[
+                {
+                    path:"checkout",
+                    element:<CheckOutPage/>
+                },
+            ]},
             {
                 path:"",
                 element:<HomePage/>
@@ -49,10 +56,7 @@ export const router =createBrowserRouter([
                 path:"basket",
                 element:<BasketPage/>
             },
-            {
-                path:"checkout",
-                element:<CheckOutPage/>
-            },
+           
             {
                 path:"login",
                 element:<Login/>
