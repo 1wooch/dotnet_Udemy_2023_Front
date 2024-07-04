@@ -1,14 +1,10 @@
-import { Box, Button, Grid, IconButton, Typography } from "@mui/material";
-import { Add, Remove } from "@mui/icons-material";
+import {  Button, Grid, Typography } from "@mui/material";
 import React from "react";
 import BasketSummary from "./BasketSummary";
 import { Link } from "react-router-dom";
-import { useAppDispatch } from "../../app/store/configureStore";
-import { addBasketItemAsync, removeBasketItemAsync } from "../basket/basketSlice";
 
 export default function BasketPage(){
-    const dispatch=useAppDispatch();
-    const { basket, status } = useAppSelector(state => state.basket);
+    const { basket } = useAppSelector(state => state.basket);
     //no need since we can't use loading button
     
     
@@ -17,47 +13,7 @@ export default function BasketPage(){
 
     return(
         <React.Fragment>
-            <div>
-                <h1>Buyer Id = {basket.buyerId}</h1>
-
-                <div>
-                    <table style={{ minWidth: 650 }} aria-label="simple table">
-                        <thead>
-                            <tr>
-                                <th>Product (100g serving)</th>
-                                <th style={{ textAlign: 'right' }}>Price</th>
-                                <th style={{ textAlign: 'center' }}>Quantity</th>
-                                <th style={{ textAlign: 'right' }}>Subtotal</th>
-                                <th style={{ textAlign: 'right' }}></th>
-                            </tr>
-                        </thead> 
-                        <tbody>
-                            {basket.items.map(item => (
-                                <tr key={item.productId}>
-                                    <Box display='flex' alignItems='center'>
-                                        <img src={item.pictureUrl} alt={item.name} style={{height:50, marginRight:20}}/>
-                                        <span>{item.name}</span>
-                                    </Box>
-                                    <td style={{ textAlign: 'right' }}>{(item.price / 100).toFixed(2)}$</td>
-                                    <td style={{ textAlign: 'center' }}>
-                                        <IconButton color='error'/> {/*this part should be loading button */}
-                                        <Remove onClick={()=>dispatch(removeBasketItemAsync({productId:item.productId,quantity:1,name:"Rem"}))}/>
-                                        {item.quantity}
-                                        <IconButton color='error'/>
-                                        <Add onClick={()=>dispatch(addBasketItemAsync({productId:item.productId}))}/>
-                                    </td>
-                                    <td style={{ textAlign: 'right' }}>{((item.price / 100) * item.quantity).toFixed(2)}$</td>
-                                    <td style={{ textAlign: 'right' }}>
-                                        <button onClick={()=>dispatch(removeBasketItemAsync({productId:item.productId,quantity:item.quantity,name:'del'}))} style={{ color: 'red' }}>
-                                            Delete
-                                        </button>
-                                    </td>
-                                </tr>
-                            ))}
-                        </tbody>
-                    </table>
-                </div>
-            </div>
+            <BasketTable items={basket.items}/>
             <Grid container>
                 <Grid item xs={6}/> 
                 <Grid item xs={6}>
@@ -80,6 +36,7 @@ export default function BasketPage(){
 
 import { TypedUseSelectorHook, useSelector } from "react-redux";
 import { RootState } from "../../app/store/configureStore";
+import BasketTable from "./basketTable";
 
 const useAppSelector: TypedUseSelectorHook<RootState> = useSelector;
 //THis code or part commented out because material UI lab causing error so I changed
