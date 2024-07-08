@@ -6,6 +6,9 @@ import Review from "./Review";
 import { FieldValues, FormProvider, useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { validationSchema } from "./CheckOutValidation";
+import agent from "../../app/api/agent";
+import { useAppDispatch } from "../../app/store/configureStore";
+import { clearBasket } from "../basket/basketSlice";
 
 const steps = ['Shipping address', 'Review your order', 'Payment details'];
 
@@ -25,6 +28,9 @@ function getStepContent(step: number) {
 export default function CheckoutPage() {
     
     const [activeStep, setActiveStep] = useState(0);
+    const [orderNumber, setOrderNumber] = useState(0);
+    const [loading, setLoading] = useState(false);
+    const dispatch = useAppDispatch();
 
     const currentValidationSchema = validationSchema[activeStep];
 
@@ -36,11 +42,25 @@ export default function CheckoutPage() {
         }
     );
 
-    const handleNext = (data: FieldValues) => {
-        if(activeStep == 2) {
-            console.log(data)
+    const handleNext = async (data: FieldValues) => {
+        const {nameOnCard, saveAddress, ...shippingAddress} = data;
+        if(activeStep === steps.length -1) {
+            setLoading(true);
+            try{
+                const orderNumber = await agent.Orders.create({saveAddress,shippingAddress})
+                setOrderNumber(orderNumber);
+                setActiveStep(activeStep + 1);
+                dispatch(clearBasket());
+                setLoading(false);
+            
+            }catch(error){
+                console.log(error);
+                setLoading(false);
+            }
+        }else{
+            setActiveStep(activeStep + 1);
+        
         }
-        setActiveStep(activeStep + 1);
     };
 
     const handleBack = () => {
@@ -67,9 +87,9 @@ export default function CheckoutPage() {
                             Thank you for your order.
                         </Typography>
                         <Typography variant="subtitle1">
-                            Your order number is #2001539. We have emailed your order
-                            confirmation, and will send you an update when your order has
-                            shipped.
+                            Your order number is #{orderNumber}. We have not emailed your order
+                            confirmation, and will not send you an update when your order has
+                            shipped. This is Fake
                         </Typography>
                     </>
                 ) : (
@@ -81,7 +101,9 @@ export default function CheckoutPage() {
                                     Back
                                 </Button>
                             )}
+                            
                             <Button
+                            //no loading button for now
                                 disabled={!methods.formState.isValid}
                                 variant="contained"
                                 type="submit"
