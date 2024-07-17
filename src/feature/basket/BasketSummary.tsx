@@ -1,32 +1,18 @@
 import { TableContainer, Paper, Table, TableBody, TableRow, TableCell } from "@mui/material";
-import { useEffect, useState } from "react";
 import { useAppSelector } from "../../app/store/configureStore";
+import { currencyFormat } from "../../app/util/util";
 
+interface Props {
+    subtotal?: number;
+}
 
-export default function BasketSummary() {
-    
-    const [subtotal, setSubtotal] = useState(0);
-    const [deliveryFee, setDeliveryFee] = useState(15);
+export default function BasketSummary({subtotal}: Props) {
     const {basket} = useAppSelector(state=>state.basket);
+    if(subtotal === undefined) {
+        subtotal = basket?.items.reduce((sum, item) => sum + (item.price * item.quantity), 0) ?? 0;
+    }
 
-    useEffect(() => {
-            let calculatedSubtotal = 0;
-            // Calculate subtotal
-            basket?.items.forEach(item => {
-                calculatedSubtotal += item.quantity * item.price;
-            });
-            // Format subtotal as currency with two decimal places
-            setSubtotal(parseFloat((calculatedSubtotal / 100).toFixed(2)));
-        }, [basket]);
-      
-    useEffect(() => {
-        // Adjust delivery fee based on subtotal
-        if (subtotal > 100) {
-        setDeliveryFee(0);
-        } else {
-        setDeliveryFee(15);
-        }
-    }, [subtotal]);
+    const deliveryFee = subtotal > 10000 ? 0 : 500;
 
     return (
         <>
@@ -35,15 +21,15 @@ export default function BasketSummary() {
                     <TableBody>
                         <TableRow>
                             <TableCell colSpan={2}>Subtotal</TableCell>
-                            <TableCell align="right">{subtotal}</TableCell>
+                            <TableCell align="right">{currencyFormat(subtotal)}</TableCell>
                         </TableRow>
                         <TableRow>
                             <TableCell colSpan={2}>Delivery fee*</TableCell>
-                            <TableCell align="right">{deliveryFee}</TableCell>
+                            <TableCell align="right">{currencyFormat(deliveryFee)}</TableCell>
                         </TableRow>
                         <TableRow>
                             <TableCell colSpan={2}>Total</TableCell>
-                            <TableCell align="right">{subtotal + deliveryFee}</TableCell>
+                            <TableCell align="right">{currencyFormat(subtotal + deliveryFee)}</TableCell>
                         </TableRow>
                         <TableRow>
                             <TableCell>

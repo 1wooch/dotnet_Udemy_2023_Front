@@ -5,6 +5,7 @@ import agent from "../../app/api/agent";
 import LoadingComponent from "../../app/layout/LoadingComponent";
 import { Order } from "../../app/models/order";
 import { currencyFormat } from "../../app/util/util";
+import OrderDetailed from "./OrderDetailed";
 
 export default function Orders() {
     const [orders, setOrders] = useState<Order[] | null>(null);
@@ -21,13 +22,13 @@ export default function Orders() {
 
     if (loading) return <LoadingComponent message="Loading orders..." />
 
-    /*
+    
     if (selectedOrderNumber > 0 && orders) return (
         <OrderDetailed
             order={orders.find(o => o.id === selectedOrderNumber)!}
             setSelectedOrder={setSelectedOrderNumber}
         />
-    )*/
+    )
 
     return (
         <TableContainer component={Paper}>
